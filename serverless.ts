@@ -19,6 +19,31 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
     },
   },
+  resources: {
+    Resources: {
+      CognitoAuthorizer: {
+        Type: "AWS::ApiGateway::Authorizer",
+        Properties: {
+          Name: "cognitoAuthorizer",
+          Type: "COGNITO_USER_POOLS",
+          ProviderARNs: [
+            "arn:aws:cognito-idp:us-east-1:xxxx:userpool/<user-pool-id>",
+          ],
+          IdentitySource: "method.request.header.Authorization",
+          RestApiId: {
+            Ref: "ApiGatewayRestApi",
+          },
+        },
+      },
+    },
+  },
+  outputs: {
+    CognitoAuthorizer: {
+      Value: {
+        Ref: "CognitoAuthorizer",
+      },
+    },
+  },
   // import the function via paths
   functions: { hello, getNotesFunction, addNoteFunction },
   package: { individually: true },
